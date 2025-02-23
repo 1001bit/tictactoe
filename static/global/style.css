@@ -1,0 +1,103 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
+
+:root {
+	--acc1: #4cff79;
+	--acc1-dim: #4cff79a9;
+	--main1: #f9f9f9;
+	--main1-dim: #f9f9f98f;
+	--main2: #000000;
+}
+
+html {
+	font-size: 20px;
+	overflow-x: hidden;
+	scrollbar-width: thin;
+	scrollbar-color: var(--acc1-dim) var(--main2);
+}
+
+@media (max-width: 768px) {
+	html {
+		font-size: 16px;
+	}
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	max-width: 100%;
+}
+
+body {
+	font-style: normal;
+	font-family: "DM Mono", serif;
+	background: var(--main2);
+	padding: 0 0.5rem;
+
+	display: flex;
+	flex-direction: column;
+	gap: 4vh;
+	color: var(--main1);
+	overflow-x: hidden;
+}
+
+* Text */ a {
+	color: var(--acc1);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+h1 {
+	font-weight: 500;
+	font-size: 2.25rem;
+}
+
+h2 {
+	font-weight: 500;
+	font-size: 2rem;
+}
+
+h3 {
+	font-weight: 500;
+	font-size: 1.75rem;
+}
+
+p,
+a {
+	font-weight: 400;
+	font-size: 1.25rem;
+}
+
+p.bold,
+a {
+	font-weight: 500;
+}
+
+h3.bold,
+h2.bold,
+h1.bold {
+	font-weight: 600;
+}
+
+p.tiny,
+a.tiny {
+	font-weight: 400;
+	font-size: 0.75rem;
+}
+
+/* additionals */
+.dim {
+	color: var(--main1-dim);
+}
+
+.hidden {
+	display: none !important;
+}
+
+.no-padding {
+	padding: 0 !important;
+}

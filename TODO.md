@@ -1,4 +1,6 @@
-[X] Microservice and web page
-[ ] Rooms page html css
-[ ] TS -> JS
-[ ] Rooms page js and backend
+[X] Home page load
+[X] Static files load
+[X] Global css
+[ ] Rooms (home) page html css
+[ ] TS -> JS compilation
+[ ] Rooms page script and backend
