@@ -41,7 +41,7 @@ body {
 	overflow-x: hidden;
 }
 
-* Text */ a {
+a {
 	color: var(--acc1);
 	text-decoration: none;
 }

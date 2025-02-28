@@ -1,0 +1,24 @@
+.room, #create-room {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: var(--main1) 1px solid;
+    border-radius: 0.25rem;
+    width: fit-content;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.sample {
+    display: none;
+}
+
+#rooms {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content:center;
+    gap: 2rem;
+    margin: 1rem 0;
+}
