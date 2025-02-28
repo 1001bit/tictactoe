@@ -1,0 +1,25 @@
+{
+	"compilerOptions": {
+		"target": "es6",
+
+		"strict": true,
+
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"allowUnreachableCode": true,
+		"allowUnusedLabels": false,
+
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+
+		"forceConsistentCasingInFileNames": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": true,
+
+		"removeComments": true,
+
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"lib": ["ES2021", "DOM"]
+	}
+}

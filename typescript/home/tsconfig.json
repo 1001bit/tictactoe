@@ -1,0 +1,9 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"outFile": "../../static/home/script.js"
+	},
+	"include": [
+		"*.ts",
+	]
+}
