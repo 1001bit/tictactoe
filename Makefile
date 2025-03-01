@@ -4,7 +4,7 @@ TSCOMPILER = python3 typescript/tscompiler.py
 TS_PATH = typescript
 
 # Build and start
-all: start
+all: start tscompile
 
 # Build the Docker containers
 start:

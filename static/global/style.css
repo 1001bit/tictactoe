@@ -1,10 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 
 :root {
-	--acc1: #4cff79;
-	--acc1-dim: #4cff79a9;
-	--main1: #f9f9f9;
-	--main1-dim: #f9f9f98f;
+	--acc1: #58d320;
+	--acc1-dim: #59d320b6;
+	--main1: #ffffff;
+	--main1-dim: #ffffff8f;
 	--main2: #000000;
 }
 
