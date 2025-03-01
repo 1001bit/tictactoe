@@ -6,4 +6,6 @@
 [ ] Rooms backend
     [X] Game service endpoint
     [X] Rooms SSE dummy endpoint
-    [ ] Room unit with sse clients
+    [X] Hub with SSE connections
+    [ ] Room creation
+    [ ] Room unit with WS connections
