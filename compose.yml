@@ -1,5 +1,4 @@
 services:
-    # GATEWAY
     gateway:
         build: ./services/gateway
         environment:
@@ -11,6 +10,14 @@ services:
         volumes:
             - ./html:/app/html
             - ./static:/app/static
+        restart: always
+
+    game:
+        build: ./services/game
+        environment:
+            PORT: ${SERVER_PORT}
+        networks:
+            - network
         restart: always
 
 networks:

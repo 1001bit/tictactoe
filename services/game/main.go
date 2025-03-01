@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/1001bit/tictactoe/services/gateway/server"
+	"github.com/1001bit/tictactoe/services/game/server"
 )
 
 func init() {
@@ -13,10 +13,7 @@ func init() {
 
 func main() {
 	s := server.New()
-
-	port := os.Getenv("PORT")
-	gameAddr := "http://game:" + os.Getenv("PORT")
-	if err := s.Run(port, gameAddr); err != nil {
+	if err := s.Run(os.Getenv("PORT")); err != nil {
 		slog.Error(err.Error())
 	}
 	slog.Info("Server stopped")

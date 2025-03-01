@@ -4,5 +4,6 @@
 [X] Rooms (home) page html css
 [X] TS -> JS compilation
 [ ] Rooms backend
-    [ ] Game service endpoint
-    [ ] Rooms SSE connection
+    [X] Game service endpoint
+    [X] Rooms SSE dummy endpoint
+    [ ] Room unit with sse clients

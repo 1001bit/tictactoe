@@ -12,18 +12,14 @@ func New() *Server {
 	return &Server{}
 }
 
-func (s *Server) Run(port, gameAddr string) error {
+func (s *Server) Run(port string) error {
 	addr := ":" + port
 	slog.Info(
 		"Start server",
 		"addr", addr,
 	)
 
-	r, err := s.newRouter(gameAddr)
-	if err != nil {
-		return err
-	}
-	http.ListenAndServe(addr, r)
+	http.ListenAndServe(addr, s.newRouter())
 
 	return nil
 }
