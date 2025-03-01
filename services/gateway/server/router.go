@@ -3,8 +3,8 @@ package server
 import (
 	"net/http"
 
+	"github.com/1001bit/tictactoe/services/gateway/handler"
 	"github.com/1001bit/tictactoe/services/gateway/httpproxy"
-	"github.com/1001bit/tictactoe/services/gateway/server/handler"
 	"github.com/go-chi/chi/v5"
 )
 

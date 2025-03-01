@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/1001bit/tictactoe/services/game/server/handler"
+	"github.com/1001bit/tictactoe/services/game/handler"
 	"github.com/go-chi/chi/v5"
 )
 
