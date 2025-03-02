@@ -1,0 +1,9 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"outFile": "../../static/room/script.js"
+	},
+	"include": [
+		"*.ts",
+	]
+}

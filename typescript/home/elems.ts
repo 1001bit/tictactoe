@@ -1,0 +1,1 @@
+const createRoomLink = document.getElementById("create-room-link") as HTMLAnchorElement;

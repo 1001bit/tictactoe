@@ -7,5 +7,10 @@
     [X] Game service endpoint
     [X] Rooms SSE dummy endpoint
     [X] Hub with SSE connections
-    [ ] Room creation
-    [ ] Room unit with WS connections
+    [X] Room creation
+    [X] Room unit with WS connections
+    [X] Dummy echoer
+    [ ] Tell hub about room create and delete
+    [ ] TicTacToe logic
+[ ] Frontend
+    [ ] Script

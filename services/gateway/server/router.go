@@ -17,6 +17,7 @@ func (s *Server) newRouter(gameAddr string) (*chi.Mux, error) {
 	}
 
 	r.Get("/", handler.HandleHome)
+	r.Get("/room", handler.HandleRoom)
 	r.Get("/static/*", http.StripPrefix("/static", handler.Static()).ServeHTTP)
 	r.Get("/api/game/*", gameServiceProxy.ProxyHandler("/api/game").ServeHTTP)
 
