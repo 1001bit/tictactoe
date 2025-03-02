@@ -39,6 +39,7 @@ func (r *Room) Run(hub *RoomHub) {
 				return
 			}
 			if len(r.clients) >= 2 {
+				close(client.sendCh)
 				continue
 			}
 			r.clients[client] = true
