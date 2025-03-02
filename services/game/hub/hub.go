@@ -1,6 +1,14 @@
 package hub
 
-import "log/slog"
+import (
+	"encoding/json"
+	"log/slog"
+)
+
+type RoomMsg struct {
+	Id      string `json:"id"`
+	Players int    `json:"players"`
+}
 
 type Hub struct {
 	broadcast  chan []byte
@@ -53,7 +61,13 @@ func (h *Hub) Run() {
 	}
 }
 
-func (h *Hub) BroadcastRoomsMsg(rooms []byte) {
-	h.roomsMsg = rooms
+func (h *Hub) BroadcastRoomsMsg(roomsMsg []RoomMsg) {
+	msgByte, err := json.Marshal(map[string][]RoomMsg{"rooms": roomsMsg})
+	if err != nil {
+		slog.Error("error marshaling", "err", err.Error())
+		return
+	}
+
+	h.roomsMsg = msgByte
 	h.broadcast <- h.roomsMsg
 }

@@ -10,9 +10,7 @@
     [X] Room creation
     [X] Room unit with WS connections
     [X] Dummy echoer
-    [X] Tell hub about room create and delete
-        [X] Frontend
-        [ ] Players count
+    [X] Tell hub about rooms create/delete/player connections
     [ ] TicTacToe logic
         [ ] Backend
         [ ] Frontend

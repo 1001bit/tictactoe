@@ -26,9 +26,9 @@ func NewRoom(id string) *Room {
 	}
 }
 
-func (r *Room) Run(hub *RoomHub) {
+func (r *Room) Run(roomHub *RoomHub) {
 	defer func() {
-		hub.roomUnregister <- r.id
+		roomHub.roomUnregister <- r.id
 	}()
 
 	slog.Info("Room started", "id", r.id)
@@ -43,14 +43,18 @@ func (r *Room) Run(hub *RoomHub) {
 				continue
 			}
 			r.clients[client] = true
+			roomHub.roomsUpdateChan <- nil
 		case client := <-r.unregister:
 			if _, ok := r.clients[client]; !ok {
 				continue
 			}
 			delete(r.clients, client)
 			close(client.sendCh)
+
 			if len(r.clients) == 0 {
 				return
+			} else {
+				roomHub.roomsUpdateChan <- nil
 			}
 		case message := <-r.broadcast:
 			for client := range r.clients {

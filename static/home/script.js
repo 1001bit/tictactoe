@@ -16,15 +16,15 @@ class RoomsLoader {
     }
     renderRooms(rooms) {
         roomsContainer.innerHTML = "";
-        for (const roomId of rooms) {
+        for (const roomMsg of rooms) {
             const roomElem = roomSample.cloneNode(true);
             roomElem.classList.remove("sample");
             const roomName = roomElem.getElementsByClassName("room-name")[0];
             const roomPlayers = roomElem.getElementsByClassName("room-players")[0];
             const roomJoin = roomElem.getElementsByClassName("room-join")[0];
-            roomName.innerText = roomId;
-            roomPlayers.innerText = "TODO/2 players";
-            roomJoin.href = "/room?id=" + roomId;
+            roomName.innerText = roomMsg.id;
+            roomPlayers.innerText = roomMsg.players + "/2 players";
+            roomJoin.href = "/room?id=" + roomMsg.id;
             roomsContainer.appendChild(roomElem);
         }
     }

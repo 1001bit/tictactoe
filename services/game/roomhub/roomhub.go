@@ -1,9 +1,6 @@
 package roomhub
 
-import (
-	"encoding/json"
-	"log/slog"
-)
+import "github.com/1001bit/tictactoe/services/game/hub"
 
 type ClientRegRequest struct {
 	roomID string
@@ -15,6 +12,8 @@ type RoomHub struct {
 	roomUnregister chan string
 
 	clientRegister chan ClientRegRequest
+
+	roomsUpdateChan chan []struct{}
 }
 
 func New() *RoomHub {
@@ -23,32 +22,24 @@ func New() *RoomHub {
 		roomUnregister: make(chan string),
 
 		clientRegister: make(chan ClientRegRequest),
+
+		roomsUpdateChan: make(chan []struct{}),
 	}
 }
 
-func (rh *RoomHub) roomsMsgToHub(hubBroadcastRooms func([]byte)) {
-	type RoomNotify struct {
-		Rooms []string `json:"rooms"`
+func (rh *RoomHub) GenerateAndBroadcastRoomsMsg(h *hub.Hub) {
+	roomsMsg := make([]hub.RoomMsg, 0, len(rh.rooms))
+	for _, room := range rh.rooms {
+		roomsMsg = append(roomsMsg, hub.RoomMsg{
+			Id:      room.id,
+			Players: len(room.clients),
+		})
 	}
 
-	rn := RoomNotify{
-		Rooms: make([]string, 0, len(rh.rooms)),
-	}
-
-	for roomId := range rh.rooms {
-		rn.Rooms = append(rn.Rooms, roomId)
-	}
-
-	b, err := json.Marshal(rn)
-	if err != nil {
-		slog.Error("error marshaling", "err", err.Error())
-		return
-	}
-
-	hubBroadcastRooms(b)
+	h.BroadcastRoomsMsg(roomsMsg)
 }
 
-func (rh *RoomHub) Run(hubBroadcastRoomsMsg func([]byte)) {
+func (rh *RoomHub) Run(h *hub.Hub) {
 	for {
 		select {
 		case req := <-rh.clientRegister:
@@ -60,8 +51,6 @@ func (rh *RoomHub) Run(hubBroadcastRoomsMsg func([]byte)) {
 			}
 			req.client.room = room
 			room.register <- req.client
-
-			rh.roomsMsgToHub(hubBroadcastRoomsMsg)
 		case roomId := <-rh.roomUnregister:
 			room, ok := rh.rooms[roomId]
 			if !ok {
@@ -72,7 +61,9 @@ func (rh *RoomHub) Run(hubBroadcastRoomsMsg func([]byte)) {
 			close(room.unregister)
 			delete(rh.rooms, roomId)
 
-			rh.roomsMsgToHub(hubBroadcastRoomsMsg)
+			rh.GenerateAndBroadcastRoomsMsg(h)
+		case <-rh.roomsUpdateChan:
+			rh.GenerateAndBroadcastRoomsMsg(h)
 		}
 	}
 }

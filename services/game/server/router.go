@@ -12,7 +12,7 @@ func (s *Server) newRouter() *chi.Mux {
 	go hub.Run()
 
 	roomHub := roomhub.New()
-	go roomHub.Run(hub.BroadcastRoomsMsg)
+	go roomHub.Run(hub)
 
 	r.Get("/roomsSSE", hub.HandleSSE)
 	r.Get("/roomWS/{roomID}", roomHub.HandleWS)

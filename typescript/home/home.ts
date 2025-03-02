@@ -1,3 +1,8 @@
+interface RoomMsg {
+    id: string;
+    players: number;
+}
+
 class RoomsLoader {
     es: EventSource;
 
@@ -14,18 +19,18 @@ class RoomsLoader {
         }
     }
 
-    renderRooms(rooms: string[]) {
+    renderRooms(rooms: RoomMsg[]) {
         roomsContainer.innerHTML = "";
 
-        for (const roomId of rooms) {
+        for (const roomMsg of rooms) {
             const roomElem = roomSample.cloneNode(true) as HTMLDivElement;
             roomElem.classList.remove("sample");
             const roomName = roomElem.getElementsByClassName("room-name")[0] as HTMLDivElement;
             const roomPlayers = roomElem.getElementsByClassName("room-players")[0] as HTMLDivElement;
             const roomJoin = roomElem.getElementsByClassName("room-join")[0] as HTMLAnchorElement;
-            roomName.innerText = roomId;
-            roomPlayers.innerText = "TODO/2 players";
-            roomJoin.href = "/room?id=" + roomId;
+            roomName.innerText = roomMsg.id;
+            roomPlayers.innerText = roomMsg.players + "/2 players";
+            roomJoin.href = "/room?id=" + roomMsg.id;
             roomsContainer.appendChild(roomElem);
         }
     }
