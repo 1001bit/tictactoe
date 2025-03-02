@@ -1,7 +1,7 @@
 package hub
 
 import (
-	"log/slog"
+	"fmt"
 	"net/http"
 )
 
@@ -36,11 +36,7 @@ func (hub *Hub) HandleSSE(w http.ResponseWriter, r *http.Request) {
 			if !ok {
 				return
 			}
-			_, err := w.Write(message)
-			if err != nil {
-				slog.Error("error writing", "err", err.Error())
-				return
-			}
+			fmt.Fprintf(w, "data: %s\n\n", message)
 			flusher.Flush()
 		case <-r.Context().Done():
 			return

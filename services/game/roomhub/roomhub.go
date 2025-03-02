@@ -1,5 +1,10 @@
 package roomhub
 
+import (
+	"encoding/json"
+	"log/slog"
+)
+
 type ClientRegRequest struct {
 	roomID string
 	client *Client
@@ -21,7 +26,29 @@ func New() *RoomHub {
 	}
 }
 
-func (rh *RoomHub) Run() {
+func (rh *RoomHub) roomsNotify(notifyChan chan<- []byte) {
+	type RoomNotify struct {
+		Rooms []string `json:"rooms"`
+	}
+
+	rn := RoomNotify{
+		Rooms: make([]string, 0, len(rh.rooms)),
+	}
+
+	for roomId := range rh.rooms {
+		rn.Rooms = append(rn.Rooms, roomId)
+	}
+
+	b, err := json.Marshal(rn)
+	if err != nil {
+		slog.Error("error marshaling", "err", err.Error())
+		return
+	}
+
+	notifyChan <- b
+}
+
+func (rh *RoomHub) Run(notifyChan chan<- []byte) {
 	for {
 		select {
 		case req := <-rh.clientRegister:
@@ -33,6 +60,8 @@ func (rh *RoomHub) Run() {
 			}
 			req.client.room = room
 			room.register <- req.client
+
+			rh.roomsNotify(notifyChan)
 		case roomId := <-rh.roomUnregister:
 			room, ok := rh.rooms[roomId]
 			if !ok {
@@ -42,6 +71,8 @@ func (rh *RoomHub) Run() {
 			close(room.register)
 			close(room.unregister)
 			delete(rh.rooms, roomId)
+
+			rh.roomsNotify(notifyChan)
 		}
 	}
 }

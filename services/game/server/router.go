@@ -10,10 +10,9 @@ func (s *Server) newRouter() *chi.Mux {
 	r := chi.NewRouter()
 	hub := hub.New()
 	go hub.Run()
-	go hub.DummyBroadcast()
 
 	roomHub := roomhub.New()
-	go roomHub.Run()
+	go roomHub.Run(hub.BroadcastIn())
 
 	r.Get("/roomsSSE", hub.HandleSSE)
 	r.Get("/roomWS/{roomID}", roomHub.HandleWS)

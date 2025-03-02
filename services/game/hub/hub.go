@@ -1,8 +1,6 @@
 package hub
 
-import (
-	"time"
-)
+import "log/slog"
 
 type Hub struct {
 	broadcast  chan []byte
@@ -25,10 +23,12 @@ func (h *Hub) Run() {
 		select {
 		case client := <-h.register:
 			h.clients[client] = true
+			slog.Info("Hub Client registered")
 		case client := <-h.unregister:
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
 				close(client.sendCh)
+				slog.Info("Hub Client unregistered")
 			}
 		case message := <-h.broadcast:
 			for client := range h.clients {
@@ -43,9 +43,6 @@ func (h *Hub) Run() {
 	}
 }
 
-func (h *Hub) DummyBroadcast() {
-	for {
-		time.Sleep(time.Second)
-		h.broadcast <- []byte("data: dummy\n\n")
-	}
+func (h *Hub) BroadcastIn() chan<- []byte {
+	return h.broadcast
 }
