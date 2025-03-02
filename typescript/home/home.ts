@@ -8,6 +8,26 @@ class RoomsLoader {
 
     handleMsg(event: MessageEvent) {
         console.log(event.data);
+        const data = JSON.parse(event.data);
+        if ("rooms" in data) {
+            this.renderRooms(data.rooms);
+        }
+    }
+
+    renderRooms(rooms: string[]) {
+        roomsContainer.innerHTML = "";
+
+        for (const roomId of rooms) {
+            const roomElem = roomSample.cloneNode(true) as HTMLDivElement;
+            roomElem.classList.remove("sample");
+            const roomName = roomElem.getElementsByClassName("room-name")[0] as HTMLDivElement;
+            const roomPlayers = roomElem.getElementsByClassName("room-players")[0] as HTMLDivElement;
+            const roomJoin = roomElem.getElementsByClassName("room-join")[0] as HTMLAnchorElement;
+            roomName.innerText = roomId;
+            roomPlayers.innerText = "TODO/2 players";
+            roomJoin.href = "/room?id=" + roomId;
+            roomsContainer.appendChild(roomElem);
+        }
     }
 }
 

@@ -26,7 +26,7 @@ func New() *RoomHub {
 	}
 }
 
-func (rh *RoomHub) roomsNotify(notifyChan chan<- []byte) {
+func (rh *RoomHub) roomsMsgToHub(hubBroadcastRooms func([]byte)) {
 	type RoomNotify struct {
 		Rooms []string `json:"rooms"`
 	}
@@ -45,10 +45,10 @@ func (rh *RoomHub) roomsNotify(notifyChan chan<- []byte) {
 		return
 	}
 
-	notifyChan <- b
+	hubBroadcastRooms(b)
 }
 
-func (rh *RoomHub) Run(notifyChan chan<- []byte) {
+func (rh *RoomHub) Run(hubBroadcastRoomsMsg func([]byte)) {
 	for {
 		select {
 		case req := <-rh.clientRegister:
@@ -61,7 +61,7 @@ func (rh *RoomHub) Run(notifyChan chan<- []byte) {
 			req.client.room = room
 			room.register <- req.client
 
-			rh.roomsNotify(notifyChan)
+			rh.roomsMsgToHub(hubBroadcastRoomsMsg)
 		case roomId := <-rh.roomUnregister:
 			room, ok := rh.rooms[roomId]
 			if !ok {
@@ -72,7 +72,7 @@ func (rh *RoomHub) Run(notifyChan chan<- []byte) {
 			close(room.unregister)
 			delete(rh.rooms, roomId)
 
-			rh.roomsNotify(notifyChan)
+			rh.roomsMsgToHub(hubBroadcastRoomsMsg)
 		}
 	}
 }
