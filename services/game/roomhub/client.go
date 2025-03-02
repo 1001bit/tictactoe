@@ -34,6 +34,8 @@ func (c *Client) readPump(conn *websocket.Conn) {
 		conn.Close()
 		if c.room != nil {
 			c.room.unregister <- c
+		} else {
+			close(c.sendCh)
 		}
 	}()
 
@@ -79,22 +81,8 @@ func (c *Client) writePump(conn *websocket.Conn) {
 				return
 			}
 
-			w, err := conn.NextWriter(websocket.TextMessage)
+			err := conn.WriteMessage(websocket.TextMessage, message)
 			if err != nil {
-				return
-			}
-			_, err = w.Write(message)
-			if err != nil {
-				return
-			}
-
-			n := len(c.sendCh)
-			for i := 0; i < n; i++ {
-				w.Write([]byte("\n"))
-				w.Write(<-c.sendCh)
-			}
-
-			if err := w.Close(); err != nil {
 				return
 			}
 		case <-ticker.C:
