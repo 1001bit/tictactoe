@@ -1,0 +1,1 @@
+const roomIdElem = document.getElementById("room-id") as HTMLDivElement;
