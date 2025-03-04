@@ -13,6 +13,11 @@
     [X] Tell hub about rooms create/delete/player connections
     [ ] TicTacToe logic
         [ ] Frontend
-            [X] Board html + css
-            [ ] Board js
+            [ ] Board
+                [X] HTML + CSS
+                [ ] Show icon on cell on hover
+                [ ] Click, icon place, websocket message send
+            [ ] Additional information for header
+                [ ] Turn
+                [ ] Score
         [ ] Backend
