@@ -1,4 +1,4 @@
-package roomhub
+package room
 
 import (
 	"bytes"
@@ -94,7 +94,7 @@ func (c *Client) writePump(conn *websocket.Conn) {
 	}
 }
 
-func (rh *RoomHub) HandleWS(w http.ResponseWriter, r *http.Request) {
+func (rs *RoomStore) HandleWS(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		slog.Error("error upgrading", "err", err.Error())
@@ -110,7 +110,7 @@ func (rh *RoomHub) HandleWS(w http.ResponseWriter, r *http.Request) {
 		roomID: roomID,
 		client: c,
 	}
-	rh.clientRegister <- req
+	rs.clientRegister <- req
 
 	slog.Info("Client started")
 	go c.readPump(conn)

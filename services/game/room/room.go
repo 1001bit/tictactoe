@@ -1,4 +1,4 @@
-package roomhub
+package room
 
 import "log/slog"
 
@@ -26,9 +26,9 @@ func NewRoom(id string) *Room {
 	}
 }
 
-func (r *Room) Run(roomHub *RoomHub) {
+func (r *Room) Run(store *RoomStore) {
 	defer func() {
-		roomHub.roomUnregister <- r.id
+		store.roomUnregister <- r.id
 	}()
 
 	slog.Info("Room started", "id", r.id)
@@ -43,7 +43,7 @@ func (r *Room) Run(roomHub *RoomHub) {
 				continue
 			}
 			r.clients[client] = true
-			roomHub.roomsUpdateChan <- nil
+			store.roomsUpdateChan <- nil
 		case client := <-r.unregister:
 			if _, ok := r.clients[client]; !ok {
 				continue
@@ -54,7 +54,7 @@ func (r *Room) Run(roomHub *RoomHub) {
 			if len(r.clients) == 0 {
 				return
 			} else {
-				roomHub.roomsUpdateChan <- nil
+				store.roomsUpdateChan <- nil
 			}
 		case message := <-r.broadcast:
 			for client := range r.clients {

@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/1001bit/tictactoe/services/game/hub"
-	"github.com/1001bit/tictactoe/services/game/roomhub"
+	"github.com/1001bit/tictactoe/services/game/room"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -11,11 +11,11 @@ func (s *Server) newRouter() *chi.Mux {
 	hub := hub.New()
 	go hub.Run()
 
-	roomHub := roomhub.New()
-	go roomHub.Run(hub)
+	roomStore := room.NewStore()
+	go roomStore.Run(hub)
 
 	r.Get("/roomsSSE", hub.HandleSSE)
-	r.Get("/roomWS/{roomID}", roomHub.HandleWS)
+	r.Get("/roomWS/{roomID}", roomStore.HandleWS)
 
 	return r
 }

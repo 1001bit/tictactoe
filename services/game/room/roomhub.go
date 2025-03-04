@@ -1,4 +1,4 @@
-package roomhub
+package room
 
 import "github.com/1001bit/tictactoe/services/game/hub"
 
@@ -7,7 +7,7 @@ type ClientRegRequest struct {
 	client *Client
 }
 
-type RoomHub struct {
+type RoomStore struct {
 	rooms          map[string]*Room
 	roomUnregister chan string
 
@@ -16,8 +16,8 @@ type RoomHub struct {
 	roomsUpdateChan chan []struct{}
 }
 
-func New() *RoomHub {
-	return &RoomHub{
+func NewStore() *RoomStore {
+	return &RoomStore{
 		rooms:          make(map[string]*Room),
 		roomUnregister: make(chan string),
 
@@ -27,9 +27,9 @@ func New() *RoomHub {
 	}
 }
 
-func (rh *RoomHub) GenerateAndBroadcastRoomsMsg(h *hub.Hub) {
-	roomsMsg := make([]hub.RoomMsg, 0, len(rh.rooms))
-	for _, room := range rh.rooms {
+func (rs *RoomStore) GenerateAndBroadcastRoomsMsg(h *hub.Hub) {
+	roomsMsg := make([]hub.RoomMsg, 0, len(rs.rooms))
+	for _, room := range rs.rooms {
 		roomsMsg = append(roomsMsg, hub.RoomMsg{
 			Id:      room.id,
 			Players: len(room.clients),
@@ -39,31 +39,31 @@ func (rh *RoomHub) GenerateAndBroadcastRoomsMsg(h *hub.Hub) {
 	h.BroadcastRoomsMsg(roomsMsg)
 }
 
-func (rh *RoomHub) Run(h *hub.Hub) {
+func (rs *RoomStore) Run(h *hub.Hub) {
 	for {
 		select {
-		case req := <-rh.clientRegister:
-			room, ok := rh.rooms[req.roomID]
+		case req := <-rs.clientRegister:
+			room, ok := rs.rooms[req.roomID]
 			if !ok {
 				room = NewRoom(req.roomID)
-				go room.Run(rh)
-				rh.rooms[req.roomID] = room
+				go room.Run(rs)
+				rs.rooms[req.roomID] = room
 			}
 			req.client.room = room
 			room.register <- req.client
-		case roomId := <-rh.roomUnregister:
-			room, ok := rh.rooms[roomId]
+		case roomId := <-rs.roomUnregister:
+			room, ok := rs.rooms[roomId]
 			if !ok {
 				continue
 			}
 			close(room.broadcast)
 			close(room.register)
 			close(room.unregister)
-			delete(rh.rooms, roomId)
+			delete(rs.rooms, roomId)
 
-			rh.GenerateAndBroadcastRoomsMsg(h)
-		case <-rh.roomsUpdateChan:
-			rh.GenerateAndBroadcastRoomsMsg(h)
+			rs.GenerateAndBroadcastRoomsMsg(h)
+		case <-rs.roomsUpdateChan:
+			rs.GenerateAndBroadcastRoomsMsg(h)
 		}
 	}
 }
