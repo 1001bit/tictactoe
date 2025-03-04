@@ -12,5 +12,7 @@
     [X] Dummy echoer
     [X] Tell hub about rooms create/delete/player connections
     [ ] TicTacToe logic
-        [ ] Backend
         [ ] Frontend
+            [X] Board html + css
+            [ ] Board js
+        [ ] Backend
