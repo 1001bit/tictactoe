@@ -15,7 +15,8 @@
         [ ] Frontend
             [X] Parent gameplay manager
             [X] Topbar + manager
-            [ ] Handle 2nd player join
+            [ ] Handle game start
+            [ ] Handle player left
             [ ] Board
                 [X] HTML + CSS
                 [ ] Manager

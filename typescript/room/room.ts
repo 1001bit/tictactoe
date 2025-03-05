@@ -6,8 +6,16 @@ class Room {
 
     constructor(roomId: string) {
         this.conn = new RoomConn(roomId);
+        this.conn.onmessage = (data: any) => {
+            this.handleMessage(data);
+        }
+
         this.topbar = new TopBar();
         this.topbar.setRoomId(roomId);
+    }
+
+    handleMessage(msg: any){
+        console.log(msg);
     }
 }
 

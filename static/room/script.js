@@ -13,15 +13,15 @@ class TopBar {
 class RoomConn {
     constructor(roomId) {
         this.socket = new WebSocket("ws://localhost/api/game/roomWS/" + roomId);
+        this.onmessage = (_data) => { };
         this.socket.onmessage = (event) => {
-            console.log(event.data);
+            this.onmessage(JSON.parse(event.data));
         };
         this.socket.onclose = () => {
             console.log("Connection closed");
         };
         this.socket.onopen = () => {
             console.log("Connection opened");
-            this.socket.send("Hello");
         };
     }
 }
@@ -30,8 +30,14 @@ const turnElem = document.getElementById("turn");
 class Room {
     constructor(roomId) {
         this.conn = new RoomConn(roomId);
+        this.conn.onmessage = (data) => {
+            this.handleMessage(data);
+        };
         this.topbar = new TopBar();
         this.topbar.setRoomId(roomId);
+    }
+    handleMessage(msg) {
+        console.log(msg);
     }
 }
 window.onload = () => {
