@@ -1,10 +1,17 @@
 "use strict";
-const roomIdElem = document.getElementById("room-id");
-const roomId = new URLSearchParams(window.location.search).get("id");
-roomIdElem.innerText = `Room "${roomId || "Unknown"}"`;
-document.title = `Room "${roomId || "Unknown"}"`;
-class Room {
+class TopBar {
     constructor() {
+    }
+    setRoomId(roomId) {
+        roomIdElem.innerText = `Room "${roomId}"`;
+        document.title = `Room "${roomId}"`;
+    }
+    setTurn(yours, sign) {
+        turnElem.innerText = `Turn: ${yours ? "You" : "Opponent"} (${sign})`;
+    }
+}
+class RoomConn {
+    constructor(roomId) {
         this.socket = new WebSocket("ws://localhost/api/game/roomWS/" + roomId);
         this.socket.onmessage = (event) => {
             console.log(event.data);
@@ -18,4 +25,20 @@ class Room {
         };
     }
 }
-const room = new Room();
+const roomIdElem = document.getElementById("room-id");
+const turnElem = document.getElementById("turn");
+class Room {
+    constructor(roomId) {
+        this.conn = new RoomConn(roomId);
+        this.topbar = new TopBar();
+        this.topbar.setRoomId(roomId);
+    }
+}
+window.onload = () => {
+    const roomId = new URLSearchParams(window.location.search).get("id");
+    if (!roomId) {
+        window.location.href = "/";
+        return;
+    }
+    new Room(roomId);
+};

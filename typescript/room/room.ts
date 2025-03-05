@@ -1,28 +1,22 @@
 /// <reference path="elems.ts" />
 
-const roomId = new URLSearchParams(window.location.search).get("id");
-roomIdElem.innerText = `Room "${roomId || "Unknown"}"`;
-document.title = `Room "${roomId || "Unknown"}"`;
-
 class Room {
-    socket: WebSocket;
+    conn: RoomConn;
+    topbar: TopBar;
 
-    constructor(){
-        this.socket = new WebSocket("ws://localhost/api/game/roomWS/" + roomId);
-
-        this.socket.onmessage = (event) => {
-            console.log(event.data);
-        }
-
-        this.socket.onclose = () => {
-            console.log("Connection closed");
-        }
-
-        this.socket.onopen = () => {
-            console.log("Connection opened");
-            this.socket.send("Hello");
-        }
+    constructor(roomId: string) {
+        this.conn = new RoomConn(roomId);
+        this.topbar = new TopBar();
+        this.topbar.setRoomId(roomId);
     }
 }
 
-const room = new Room();
+window.onload = () => {
+    const roomId = new URLSearchParams(window.location.search).get("id");
+    if (!roomId) {
+        window.location.href = "/";
+        return;
+        
+    }
+    new Room(roomId);
+}

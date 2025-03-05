@@ -29,3 +29,11 @@ main {
     cursor: pointer;
 }
 
+#top-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+}

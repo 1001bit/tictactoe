@@ -13,11 +13,14 @@
     [X] Tell hub about rooms create/delete/player connections
     [ ] TicTacToe logic
         [ ] Frontend
+            [X] Parent gameplay manager
+            [X] Topbar + manager
+            [ ] Handle 2nd player join
             [ ] Board
                 [X] HTML + CSS
-                [ ] Show icon on cell on hover
-                [ ] Click, icon place, websocket message send
-            [ ] Additional information for header
-                [ ] Turn
-                [ ] Score
+                [ ] Manager
+                    [ ] Show icon on cell on hover
+                    [ ] Click, sign place, callback
+            [ ] Place message send
+            [ ] Opponent place message handle
         [ ] Backend
