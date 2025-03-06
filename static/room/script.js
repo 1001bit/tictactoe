@@ -15,6 +15,9 @@ class TopBar {
 }
 class Board {
     constructor() {
+        this.allowPlace = false;
+        this.sign = " ";
+        this.placecallback = (_x, _y) => { };
         for (let x = 0; x < 3; x++) {
             for (let y = 0; y < 3; y++) {
                 let cell = document.getElementById("cell-" + y + "-" + x);
@@ -23,7 +26,29 @@ class Board {
         }
     }
     handleClick(x, y) {
-        console.log(x, y);
+        if (!this.allowPlace) {
+            return;
+        }
+        let cell = document.getElementById("cell-" + y + "-" + x);
+        cell.innerText = this.sign;
+        this.allowPlace = false;
+        this.placecallback(x, y);
+    }
+    setAllowPlace(allow) {
+        this.allowPlace = allow;
+    }
+    setSign(sign) {
+        this.sign = sign;
+    }
+    clear() {
+        this.sign = " ";
+        this.allowPlace = false;
+        for (let x = 0; x < 3; x++) {
+            for (let y = 0; y < 3; y++) {
+                let cell = document.getElementById("cell-" + y + "-" + x);
+                cell.innerText = " ";
+            }
+        }
     }
 }
 class RoomConn {
@@ -52,7 +77,9 @@ class Room {
         this.topbar = new TopBar();
         this.topbar.setRoomId(roomId);
         this.board = new Board();
-        this.sign = " ";
+        this.board.placecallback = (x, y) => {
+            this.handlePlace(x, y);
+        };
     }
     handleMessage(msg) {
         if (!("type" in msg)) {
@@ -68,11 +95,18 @@ class Room {
         }
     }
     handleStart(sign, turn) {
-        this.sign = sign;
-        this.topbar.setTurn(turn == this.sign, turn);
+        this.board.setSign(sign);
+        this.board.setAllowPlace(turn == sign);
+        this.topbar.setTurn(turn == sign, turn);
     }
     handleStop() {
         this.topbar.stop();
+        this.board.clear();
+    }
+    handlePlace(x, y) {
+        const turn = this.board.sign == "X" ? "O" : "X";
+        this.topbar.setTurn(false, turn);
+        console.log(x, y);
     }
 }
 window.onload = () => {

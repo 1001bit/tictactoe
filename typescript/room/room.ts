@@ -5,8 +5,6 @@ class Room {
     topbar: TopBar;
     board: Board;
 
-    sign: string;
-
     constructor(roomId: string) {
         this.conn = new RoomConn(roomId);
         this.conn.onmessage = (data: any) => {
@@ -17,8 +15,9 @@ class Room {
         this.topbar.setRoomId(roomId);
 
         this.board = new Board();
-
-        this.sign = " ";
+        this.board.placecallback = (x: number, y: number) => {
+            this.handlePlace(x, y);
+        }
     }
 
     handleMessage(msg: any){
@@ -37,12 +36,20 @@ class Room {
     }
 
     handleStart(sign: string, turn: string) {
-        this.sign = sign;
-        this.topbar.setTurn(turn == this.sign, turn);
+        this.board.setSign(sign);
+        this.board.setAllowPlace(turn == sign);
+        this.topbar.setTurn(turn == sign, turn);
     }
 
     handleStop() {
         this.topbar.stop();
+        this.board.clear();
+    }
+
+    handlePlace(x: number, y: number) {
+        const turn = this.board.sign == "X" ? "O" : "X";
+        this.topbar.setTurn(false, turn);
+        console.log(x, y);
     }
 }
 

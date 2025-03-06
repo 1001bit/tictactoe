@@ -17,11 +17,11 @@
             [X] Topbar + manager
             [X] Handle game start
             [X] Handle player left
-            [ ] Board
+            [X] Board
                 [X] HTML + CSS
-                [ ] Manager
+                [X] Manager
                     [X] Click recognition
-                    [ ] Sign place if allowed + callback
+                    [X] Sign place if allowed + callback
             [ ] Place message send
             [ ] Opponent place message handle
             [ ] Handle game end
