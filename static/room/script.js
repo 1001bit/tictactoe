@@ -9,6 +9,9 @@ class TopBar {
     setTurn(yours, sign) {
         turnElem.innerText = `Turn: ${yours ? "You" : "Opponent"} (${sign})`;
     }
+    stop() {
+        turnElem.innerText = "Waiting for another player";
+    }
 }
 class RoomConn {
     constructor(roomId) {
@@ -35,9 +38,27 @@ class Room {
         };
         this.topbar = new TopBar();
         this.topbar.setRoomId(roomId);
+        this.sign = " ";
     }
     handleMessage(msg) {
-        console.log(msg);
+        if (!("type" in msg)) {
+            return;
+        }
+        switch (msg.type) {
+            case "start":
+                this.handleStart(msg.you, msg.turn);
+                break;
+            case "stop":
+                this.handleStop();
+                break;
+        }
+    }
+    handleStart(sign, turn) {
+        this.sign = sign;
+        this.topbar.setTurn(turn == this.sign, turn);
+    }
+    handleStop() {
+        this.topbar.stop();
     }
 }
 window.onload = () => {

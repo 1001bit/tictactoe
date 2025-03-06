@@ -4,6 +4,8 @@ class Room {
     conn: RoomConn;
     topbar: TopBar;
 
+    sign: string;
+
     constructor(roomId: string) {
         this.conn = new RoomConn(roomId);
         this.conn.onmessage = (data: any) => {
@@ -12,10 +14,32 @@ class Room {
 
         this.topbar = new TopBar();
         this.topbar.setRoomId(roomId);
+
+        this.sign = " ";
     }
 
     handleMessage(msg: any){
-        console.log(msg);
+        if (!("type" in msg)) {
+            return;
+        }
+
+        switch (msg.type) {
+            case "start":
+                this.handleStart(msg.you, msg.turn);
+                break;
+            case "stop":
+                this.handleStop();
+                break;
+        }   
+    }
+
+    handleStart(sign: string, turn: string) {
+        this.sign = sign;
+        this.topbar.setTurn(turn == this.sign, turn);
+    }
+
+    handleStop() {
+        this.topbar.stop();
     }
 }
 

@@ -11,4 +11,8 @@ class TopBar {
     setTurn(yours: boolean, sign: string) {
         turnElem.innerText = `Turn: ${yours ? "You" : "Opponent"} (${sign})`;
     }
+
+    stop(){
+        turnElem.innerText = "Waiting for another player";
+    }
 }
