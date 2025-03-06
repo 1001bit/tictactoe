@@ -20,7 +20,8 @@
             [ ] Board
                 [X] HTML + CSS
                 [ ] Manager
-                    [ ] Click, sign place, callback
+                    [X] Click recognition
+                    [ ] Sign place if allowed + callback
             [ ] Place message send
             [ ] Opponent place message handle
             [ ] Handle game end

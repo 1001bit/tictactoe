@@ -3,6 +3,7 @@
 class Room {
     conn: RoomConn;
     topbar: TopBar;
+    board: Board;
 
     sign: string;
 
@@ -14,6 +15,8 @@ class Room {
 
         this.topbar = new TopBar();
         this.topbar.setRoomId(roomId);
+
+        this.board = new Board();
 
         this.sign = " ";
     }

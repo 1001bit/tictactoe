@@ -13,6 +13,19 @@ class TopBar {
         turnElem.innerText = "Waiting for another player";
     }
 }
+class Board {
+    constructor() {
+        for (let x = 0; x < 3; x++) {
+            for (let y = 0; y < 3; y++) {
+                let cell = document.getElementById("cell-" + y + "-" + x);
+                cell.addEventListener("click", () => this.handleClick(x, y));
+            }
+        }
+    }
+    handleClick(x, y) {
+        console.log(x, y);
+    }
+}
 class RoomConn {
     constructor(roomId) {
         this.socket = new WebSocket("ws://localhost/api/game/roomWS/" + roomId);
@@ -38,6 +51,7 @@ class Room {
         };
         this.topbar = new TopBar();
         this.topbar.setRoomId(roomId);
+        this.board = new Board();
         this.sign = " ";
     }
     handleMessage(msg) {
