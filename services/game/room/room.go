@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"time"
 )
 
 type Player struct {
@@ -50,17 +51,19 @@ func (r *Room) broadcastMsg(msg []byte) {
 	}
 }
 
-func (r *Room) registerClient(client *Client, store *RoomStore) bool {
+func (r *Room) registerClient(client *Client, store *RoomStore, game *Game) {
 	if len(r.clients) >= 2 {
 		close(client.sendCh)
-		return false
+		return
 	}
 	r.clients[client] = Player{
 		sign: ' ',
 	}
 
 	store.roomsUpdateChan <- nil
-	return len(r.clients) == 2
+	if len(r.clients) == 2 {
+		r.startGame(game)
+	}
 }
 
 func (r *Room) unregisterClient(client *Client, store *RoomStore) {
@@ -90,8 +93,12 @@ func (r *Room) startGame(game *Game) {
 	}
 }
 
-func (r *Room) stopGame() {
+func (r *Room) broadcastStop() {
 	r.broadcastMsg([]byte(`{"type": "stop"}`))
+}
+
+func (r *Room) broadcastEnd(result byte) {
+	r.broadcastMsg(fmt.Appendf([]byte{}, `{"type": "end", "result": "%c"}`, result))
 }
 
 func (r *Room) handleGameMsg(msg ClientMsg, game *Game) {
@@ -116,6 +123,13 @@ func (r *Room) handleGameMsg(msg ClientMsg, game *Game) {
 	}
 
 	r.broadcastMoveMsg(mm.X, mm.Y, r.clients[msg.client].sign)
+	if res := game.CheckVictory(mm.X, mm.Y); res != ' ' {
+		r.broadcastEnd(res)
+		go func() {
+			time.Sleep(3 * time.Second)
+			r.startGame(game)
+		}()
+	}
 }
 
 func (r *Room) broadcastMoveMsg(x, y int, sign byte) {
@@ -136,17 +150,13 @@ func (r *Room) Run(store *RoomStore) {
 			if !ok {
 				return
 			}
-			full := r.registerClient(client, store)
-			if !full {
-				continue
-			}
-			r.startGame(game)
+			r.registerClient(client, store, game)
 		case client := <-r.unregister:
 			r.unregisterClient(client, store)
 			if len(r.clients) == 0 {
 				return
 			} else {
-				r.stopGame()
+				r.broadcastStop()
 			}
 		case msg := <-r.gameMsgCh:
 			r.handleGameMsg(msg, game)

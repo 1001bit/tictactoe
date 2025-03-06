@@ -15,4 +15,14 @@ class TopBar {
     stop(){
         turnElem.innerText = "Waiting for another player";
     }
+
+    setResult(result: string, sign: string){
+        if(result == "D"){
+            turnElem.innerText = "Draw";
+        } else if (result == "W"){
+            turnElem.innerText = `You win (${sign})`;
+        } else {
+            turnElem.innerText = `You lose (${sign})`;
+        }
+    }
 }

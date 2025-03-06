@@ -12,6 +12,17 @@ class TopBar {
     stop() {
         turnElem.innerText = "Waiting for another player";
     }
+    setResult(result, sign) {
+        if (result == "D") {
+            turnElem.innerText = "Draw";
+        }
+        else if (result == "W") {
+            turnElem.innerText = `You win (${sign})`;
+        }
+        else {
+            turnElem.innerText = `You lose (${sign})`;
+        }
+    }
 }
 class Board {
     constructor() {
@@ -115,9 +126,13 @@ class Room {
             case "move":
                 this.handleOpponentMove(msg.x, msg.y, msg.sign);
                 break;
+            case "end":
+                this.handleEnd(msg.result);
+                break;
         }
     }
     handleStart(sign, turn) {
+        this.board.clear();
         this.board.setSign(sign);
         this.board.setAllowPlace(turn == sign);
         this.topbar.setTurn(turn == sign, turn);
@@ -132,6 +147,15 @@ class Room {
         }
         this.board.handleOpponentMove(x, y, sign);
         this.topbar.setTurn(true, this.board.sign);
+    }
+    handleEnd(result) {
+        if (result == "D") {
+            this.topbar.setResult("D", this.board.sign);
+        }
+        else {
+            this.topbar.setResult(result == this.board.sign ? "W" : "L", this.board.sign);
+        }
+        this.board.setAllowPlace(false);
     }
     handlePlace(x, y) {
         const turn = this.board.sign == "X" ? "O" : "X";

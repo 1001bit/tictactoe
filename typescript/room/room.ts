@@ -35,10 +35,14 @@ class Room {
 			case "move":
 				this.handleOpponentMove(msg.x, msg.y, msg.sign);
 				break;
+			case "end":
+				this.handleEnd(msg.result);
+				break;
 		}
 	}
 
 	handleStart(sign: string, turn: string) {
+		this.board.clear()
 		this.board.setSign(sign);
 		this.board.setAllowPlace(turn == sign);
 		this.topbar.setTurn(turn == sign, turn);
@@ -56,6 +60,15 @@ class Room {
 
 		this.board.handleOpponentMove(x, y, sign);
 		this.topbar.setTurn(true, this.board.sign);
+	}
+
+	handleEnd(result: string) {
+		if (result == "D") {
+			this.topbar.setResult("D", this.board.sign);
+		} else {
+			this.topbar.setResult(result == this.board.sign ? "W" : "L", this.board.sign);
+		}
+		this.board.setAllowPlace(false);
 	}
 
 	handlePlace(x: number, y: number) {

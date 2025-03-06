@@ -3,7 +3,7 @@
 [X] Global css
 [X] Rooms (home) page html css
 [X] TS -> JS compilation
-[ ] Rooms
+[X] Rooms
     [X] Game service endpoint
     [X] Rooms SSE dummy endpoint
     [X] Hub with SSE connections
@@ -11,8 +11,8 @@
     [X] Room unit with WS connections
     [X] Dummy echoer
     [X] Tell hub about rooms create/delete/player connections
-    [ ] TicTacToe logic
-        [ ] Frontend
+    [X] TicTacToe logic
+        [X] Frontend
             [X] Parent gameplay manager
             [X] Topbar + manager
             [X] Handle game start
@@ -24,15 +24,16 @@
                     [X] Sign place if allowed + callback
             [X] Place message send
             [X] Opponent place message handle
-            [ ] Handle game end
-                [ ] Tell who won
-                [ ] Wait 5 sec
-        [ ] Backend
+            [X] Handle game end
+                [X] Tell who won
+                [X] Wait 5 sec
+        [X] Backend
             [X] Handle game start
             [X] Notify about game stop
             [X] Handle place
-            [ ] Restart game on end
-    Extra
-        [ ] Show sign on cell hover
-        [ ] Colors
-        [ ] Cross the line on game end
+            [X] Restart game on end
+
+Extra
+    [ ] Show sign on cell hover
+    [ ] Colors
+    [ ] Cross the line on game end
