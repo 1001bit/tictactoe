@@ -20,10 +20,18 @@
             [ ] Board
                 [X] HTML + CSS
                 [ ] Manager
-                    [ ] Show icon on cell on hover
                     [ ] Click, sign place, callback
             [ ] Place message send
             [ ] Opponent place message handle
+            [ ] Handle game end
+                [ ] Tell who won
+                [ ] Wait 5 sec
         [ ] Backend
             [X] Handle game start
             [X] Notify about game stop
+            [ ] Handle place
+            [ ] Restart game on end
+    Extra
+        [ ] Show sign on cell hover
+        [ ] Colors
+        [ ] Cross the line on game end
