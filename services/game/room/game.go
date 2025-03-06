@@ -73,29 +73,23 @@ func (g *Game) Place(x, y int) bool {
 	g.board[x][y] = g.turn
 	g.n -= 1
 
+	who := 0
 	if g.turn == 'X' {
-		g.rows[x][0]++
-		g.cols[y][0]++
-		if x == y {
-			g.diags[0][0]++
-		}
-		if x == 2-y {
-			g.diags[1][0]++
-		}
-
 		g.turn = 'O'
 	} else {
-		g.rows[x][1]++
-		g.cols[y][1]++
-		if x == y {
-			g.diags[0][1]++
-		}
-		if x == 2-y {
-			g.diags[1][1]++
-		}
-
+		who = 1
 		g.turn = 'X'
 	}
+
+	g.rows[x][who]++
+	g.cols[y][who]++
+	if x == y {
+		g.diags[0][who]++
+	}
+	if x == 2-y {
+		g.diags[1][who]++
+	}
+
 	return true
 }
 
