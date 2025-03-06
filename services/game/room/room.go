@@ -1,9 +1,16 @@
 package room
 
-import "log/slog"
+import (
+	"fmt"
+	"log/slog"
+)
+
+type Player struct {
+	sign byte
+}
 
 type Room struct {
-	clients map[*Client]bool
+	clients map[*Client]Player
 
 	register   chan *Client
 	unregister chan *Client
@@ -15,7 +22,7 @@ type Room struct {
 
 func NewRoom(id string) *Room {
 	return &Room{
-		clients: make(map[*Client]bool),
+		clients: make(map[*Client]Player),
 
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
@@ -37,14 +44,17 @@ func (r *Room) broadcastMsg(msg []byte) {
 	}
 }
 
-func (r *Room) registerClient(client *Client, store *RoomStore) {
+func (r *Room) registerClient(client *Client, store *RoomStore) bool {
 	if len(r.clients) >= 2 {
 		close(client.sendCh)
-		return
+		return false
 	}
-	r.clients[client] = true
+	r.clients[client] = Player{
+		sign: ' ',
+	}
 
 	store.roomsUpdateChan <- nil
+	return len(r.clients) == 2
 }
 
 func (r *Room) unregisterClient(client *Client, store *RoomStore) {
@@ -53,13 +63,29 @@ func (r *Room) unregisterClient(client *Client, store *RoomStore) {
 	}
 	delete(r.clients, client)
 	close(client.sendCh)
+	store.roomsUpdateChan <- nil
+}
 
-	if len(r.clients) == 0 {
-		return
-	} else {
-		r.broadcastMsg([]byte(`{"type": "playerLeft"}`))
-		store.roomsUpdateChan <- nil
+func (r *Room) startGame(game *Game) {
+	game.Start()
+
+	lastSign := byte(' ')
+	for client := range r.clients {
+		if lastSign == ' ' {
+			lastSign = 'X'
+		} else {
+			lastSign = 'O'
+		}
+
+		r.clients[client] = Player{
+			sign: lastSign,
+		}
+		client.sendCh <- []byte(fmt.Sprintf(`{"type": "start", "you": "%c", "turn": "%c"}`, lastSign, game.turn))
 	}
+}
+
+func (r *Room) stopGame() {
+	r.broadcastMsg([]byte(`{"type": "stop"}`))
 }
 
 func (r *Room) Run(store *RoomStore) {
@@ -68,17 +94,27 @@ func (r *Room) Run(store *RoomStore) {
 	}()
 
 	slog.Info("Room started", "id", r.id)
-	// TODO: Handle 2nd player join and start game
-	// TODO: Handle player leave (no need to stop game)
+
+	game := NewGame()
+	// TODO: Handle player leave
 	for {
 		select {
 		case client, ok := <-r.register:
 			if !ok {
 				return
 			}
-			r.registerClient(client, store)
+			full := r.registerClient(client, store)
+			if !full {
+				continue
+			}
+			r.startGame(game)
 		case client := <-r.unregister:
 			r.unregisterClient(client, store)
+			if len(r.clients) == 0 {
+				return
+			} else {
+				r.stopGame()
+			}
 		case message := <-r.broadcast:
 			r.broadcastMsg(message)
 		}

@@ -25,3 +25,5 @@
             [ ] Place message send
             [ ] Opponent place message handle
         [ ] Backend
+            [X] Handle game start
+            [X] Notify about game stop
