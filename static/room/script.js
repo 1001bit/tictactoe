@@ -109,7 +109,7 @@ class Room {
         this.topbar.setRoomId(roomId);
         this.board = new Board();
         this.board.placecallback = (x, y) => {
-            this.handlePlace(x, y);
+            this.handleBoardPlace(x, y);
         };
     }
     handleMessage(msg) {
@@ -124,10 +124,10 @@ class Room {
                 this.handleStop();
                 break;
             case "move":
-                this.handleOpponentMove(msg.x, msg.y, msg.sign);
-                break;
-            case "end":
-                this.handleEnd(msg.result);
+                this.handleMove(msg.x, msg.y, msg.sign);
+                if (msg.result != " ") {
+                    this.handleEnd(msg.result);
+                }
                 break;
         }
     }
@@ -141,12 +141,11 @@ class Room {
         this.topbar.stop();
         this.board.clear();
     }
-    handleOpponentMove(x, y, sign) {
-        if (sign == this.board.sign) {
-            return;
+    handleMove(x, y, sign) {
+        if (sign != this.board.sign) {
+            this.board.handleOpponentMove(x, y, sign);
         }
-        this.board.handleOpponentMove(x, y, sign);
-        this.topbar.setTurn(true, this.board.sign);
+        this.topbar.setTurn(sign != this.board.sign, this.board.sign);
     }
     handleEnd(result) {
         if (result == "D") {
@@ -157,9 +156,7 @@ class Room {
         }
         this.board.setAllowPlace(false);
     }
-    handlePlace(x, y) {
-        const turn = this.board.sign == "X" ? "O" : "X";
-        this.topbar.setTurn(false, turn);
+    handleBoardPlace(x, y) {
         this.conn.sendPlaceMessage(x, y);
     }
 }

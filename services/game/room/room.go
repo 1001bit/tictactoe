@@ -122,9 +122,9 @@ func (r *Room) handleGameMsg(msg ClientMsg, game *Game) {
 		return
 	}
 
-	r.broadcastMoveMsg(mm.X, mm.Y, r.clients[msg.client].sign)
-	if res := game.CheckVictory(mm.X, mm.Y); res != ' ' {
-		r.broadcastEnd(res)
+	res := game.CheckVictory(mm.X, mm.Y)
+	r.broadcastMoveMsg(mm.X, mm.Y, r.clients[msg.client].sign, res)
+	if res != ' ' {
 		go func() {
 			time.Sleep(3 * time.Second)
 			r.startGame(game)
@@ -132,8 +132,8 @@ func (r *Room) handleGameMsg(msg ClientMsg, game *Game) {
 	}
 }
 
-func (r *Room) broadcastMoveMsg(x, y int, sign byte) {
-	r.broadcastMsg(fmt.Appendf([]byte{}, `{"type": "move", "x": %d, "y": %d, "sign": "%c"}`, x, y, sign))
+func (r *Room) broadcastMoveMsg(x, y int, sign, result byte) {
+	r.broadcastMsg(fmt.Appendf([]byte{}, `{"type": "move", "x": %d, "y": %d, "sign": "%c", "result": "%c"}`, x, y, sign, result))
 }
 
 func (r *Room) Run(store *RoomStore) {
