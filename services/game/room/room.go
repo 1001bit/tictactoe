@@ -68,6 +68,8 @@ func (r *Room) Run(store *RoomStore) {
 	}()
 
 	slog.Info("Room started", "id", r.id)
+	// TODO: Handle 2nd player join and start game
+	// TODO: Handle player leave (no need to stop game)
 	for {
 		select {
 		case client, ok := <-r.register:
