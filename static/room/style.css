@@ -15,12 +15,12 @@ main {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 3px;
+    gap: 0.25rem;
 }
 
 .cell {
-    width: 100px;
-    height: 100px;
+    width: 5rem;
+    height: 5rem;
     border: 1px solid var(--main1-dim);
     display: flex;
     justify-content: center;

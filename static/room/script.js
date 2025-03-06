@@ -53,7 +53,9 @@ class Board {
 }
 class RoomConn {
     constructor(roomId) {
-        this.socket = new WebSocket("ws://localhost/api/game/roomWS/" + roomId);
+        const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+        const host = window.location.host;
+        this.socket = new WebSocket(`${protocol}://${host}/api/game/roomWS/${roomId}`);
         this.onmessage = (_data) => { };
         this.socket.onmessage = (event) => {
             this.onmessage(JSON.parse(event.data));
