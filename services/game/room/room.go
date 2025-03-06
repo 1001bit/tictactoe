@@ -97,10 +97,6 @@ func (r *Room) broadcastStop() {
 	r.broadcastMsg([]byte(`{"type": "stop"}`))
 }
 
-func (r *Room) broadcastEnd(result byte) {
-	r.broadcastMsg(fmt.Appendf([]byte{}, `{"type": "end", "result": "%c"}`, result))
-}
-
 func (r *Room) handleGameMsg(msg ClientMsg, game *Game) {
 	if game.turn != r.clients[msg.client].sign {
 		return
