@@ -22,15 +22,15 @@
                 [X] Manager
                     [X] Click recognition
                     [X] Sign place if allowed + callback
-            [ ] Place message send
-            [ ] Opponent place message handle
+            [X] Place message send
+            [X] Opponent place message handle
             [ ] Handle game end
                 [ ] Tell who won
                 [ ] Wait 5 sec
         [ ] Backend
             [X] Handle game start
             [X] Notify about game stop
-            [ ] Handle place
+            [X] Handle place
             [ ] Restart game on end
     Extra
         [ ] Show sign on cell hover

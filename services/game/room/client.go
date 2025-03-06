@@ -57,11 +57,10 @@ func (c *Client) readPump(conn *websocket.Conn) {
 		}
 
 		msg = bytes.TrimSpace(bytes.Replace(msg, []byte{'\n'}, []byte{' '}, -1))
-		// TODO: handle message instead of broadcast
-		if c.room == nil {
-			return
+		c.room.gameMsgCh <- ClientMsg{
+			client: c,
+			msg:    msg,
 		}
-		c.room.broadcast <- msg
 	}
 }
 

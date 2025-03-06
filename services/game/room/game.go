@@ -33,16 +33,19 @@ func (g *Game) Start() {
 	g.turn = turn
 }
 
-func (g *Game) Place(x, y int) {
-	g.board[x][y] = g.turn
+func (g *Game) Place(x, y int) bool {
+	if x < 0 || x > 2 || y < 0 || y > 2 || g.board[x][y] != ' ' {
+		return false
+	}
 
-	// TODO: Calculate win
+	g.board[x][y] = g.turn
 
 	if g.turn == 'X' {
 		g.turn = 'O'
 	} else {
 		g.turn = 'X'
 	}
+	return true
 }
 
 func (g *Game) GetTurn() byte {

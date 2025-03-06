@@ -1,6 +1,7 @@
 package room
 
 import (
+	"encoding/json"
 	"fmt"
 	"log/slog"
 )
@@ -9,13 +10,18 @@ type Player struct {
 	sign byte
 }
 
+type ClientMsg struct {
+	msg    []byte
+	client *Client
+}
+
 type Room struct {
 	clients map[*Client]Player
 
 	register   chan *Client
 	unregister chan *Client
 
-	broadcast chan []byte
+	gameMsgCh chan ClientMsg
 
 	id string
 }
@@ -27,7 +33,7 @@ func NewRoom(id string) *Room {
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
 
-		broadcast: make(chan []byte),
+		gameMsgCh: make(chan ClientMsg),
 
 		id: id,
 	}
@@ -80,12 +86,40 @@ func (r *Room) startGame(game *Game) {
 		r.clients[client] = Player{
 			sign: lastSign,
 		}
-		client.sendCh <- []byte(fmt.Sprintf(`{"type": "start", "you": "%c", "turn": "%c"}`, lastSign, game.turn))
+		client.sendCh <- fmt.Appendf([]byte{}, `{"type": "start", "you": "%c", "turn": "%c"}`, lastSign, game.turn)
 	}
 }
 
 func (r *Room) stopGame() {
 	r.broadcastMsg([]byte(`{"type": "stop"}`))
+}
+
+func (r *Room) handleGameMsg(msg ClientMsg, game *Game) {
+	if game.turn != r.clients[msg.client].sign {
+		return
+	}
+
+	type moveMsg struct {
+		X int `json:"x"`
+		Y int `json:"y"`
+	}
+
+	mm := moveMsg{}
+	err := json.Unmarshal(msg.msg, &mm)
+	if err != nil {
+		return
+	}
+
+	ok := game.Place(mm.X, mm.Y)
+	if !ok {
+		return
+	}
+
+	r.broadcastMoveMsg(mm.X, mm.Y, r.clients[msg.client].sign)
+}
+
+func (r *Room) broadcastMoveMsg(x, y int, sign byte) {
+	r.broadcastMsg(fmt.Appendf([]byte{}, `{"type": "move", "x": %d, "y": %d, "sign": "%c"}`, x, y, sign))
 }
 
 func (r *Room) Run(store *RoomStore) {
@@ -96,7 +130,6 @@ func (r *Room) Run(store *RoomStore) {
 	slog.Info("Room started", "id", r.id)
 
 	game := NewGame()
-	// TODO: Handle player leave
 	for {
 		select {
 		case client, ok := <-r.register:
@@ -115,8 +148,8 @@ func (r *Room) Run(store *RoomStore) {
 			} else {
 				r.stopGame()
 			}
-		case message := <-r.broadcast:
-			r.broadcastMsg(message)
+		case msg := <-r.gameMsgCh:
+			r.handleGameMsg(msg, game)
 		}
 	}
 }

@@ -19,17 +19,33 @@ class Board {
 		}
 	}
 
-	handleClick(x: number, y: number) {
-		if (!this.allowPlace) {
-			return;
-		}
-
+	setCell(x: number, y: number, sign: string) {
 		let cell = document.getElementById(
 			"cell-" + y + "-" + x,
 		) as HTMLDivElement;
-		cell.innerText = this.sign;
+		cell.innerText = sign;
+	}
+
+	getCell(x: number, y: number): string {
+		let cell = document.getElementById(
+			"cell-" + y + "-" + x,
+		) as HTMLDivElement;
+		return cell.innerText;
+	}
+
+	handleClick(x: number, y: number) {
+		if (!this.allowPlace || this.getCell(x, y) != "") {
+			return;
+		}
+
+		this.setCell(x, y, this.sign);
 		this.allowPlace = false;
 		this.placecallback(x, y);
+	}
+
+	handleOpponentMove(x: number, y: number, sign: string) {
+		this.setCell(x, y, sign);
+		this.allowPlace = true;
 	}
 
 	setAllowPlace(allow: boolean) {

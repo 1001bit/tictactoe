@@ -56,7 +56,6 @@ func (rs *RoomStore) Run(h *hub.Hub) {
 			if !ok {
 				continue
 			}
-			close(room.broadcast)
 			close(room.register)
 			close(room.unregister)
 			delete(rs.rooms, roomId)

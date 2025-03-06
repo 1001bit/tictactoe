@@ -25,14 +25,25 @@ class Board {
             }
         }
     }
+    setCell(x, y, sign) {
+        let cell = document.getElementById("cell-" + y + "-" + x);
+        cell.innerText = sign;
+    }
+    getCell(x, y) {
+        let cell = document.getElementById("cell-" + y + "-" + x);
+        return cell.innerText;
+    }
     handleClick(x, y) {
-        if (!this.allowPlace) {
+        if (!this.allowPlace || this.getCell(x, y) != "") {
             return;
         }
-        let cell = document.getElementById("cell-" + y + "-" + x);
-        cell.innerText = this.sign;
+        this.setCell(x, y, this.sign);
         this.allowPlace = false;
         this.placecallback(x, y);
+    }
+    handleOpponentMove(x, y, sign) {
+        this.setCell(x, y, sign);
+        this.allowPlace = true;
     }
     setAllowPlace(allow) {
         this.allowPlace = allow;
@@ -67,6 +78,13 @@ class RoomConn {
             console.log("Connection opened");
         };
     }
+    sendPlaceMessage(x, y) {
+        this.socket.send(JSON.stringify({
+            type: "place",
+            x: x,
+            y: y,
+        }));
+    }
 }
 const roomIdElem = document.getElementById("room-id");
 const turnElem = document.getElementById("turn");
@@ -94,6 +112,9 @@ class Room {
             case "stop":
                 this.handleStop();
                 break;
+            case "move":
+                this.handleOpponentMove(msg.x, msg.y, msg.sign);
+                break;
         }
     }
     handleStart(sign, turn) {
@@ -105,10 +126,17 @@ class Room {
         this.topbar.stop();
         this.board.clear();
     }
+    handleOpponentMove(x, y, sign) {
+        if (sign == this.board.sign) {
+            return;
+        }
+        this.board.handleOpponentMove(x, y, sign);
+        this.topbar.setTurn(true, this.board.sign);
+    }
     handlePlace(x, y) {
         const turn = this.board.sign == "X" ? "O" : "X";
         this.topbar.setTurn(false, turn);
-        console.log(x, y);
+        this.conn.sendPlaceMessage(x, y);
     }
 }
 window.onload = () => {
