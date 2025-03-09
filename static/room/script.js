@@ -145,7 +145,7 @@ class Room {
         if (sign != this.board.sign) {
             this.board.handleOpponentMove(x, y, sign);
         }
-        this.topbar.setTurn(sign != this.board.sign, this.board.sign);
+        this.topbar.setTurn(sign != this.board.sign, sign == "O" ? "X" : "O");
     }
     handleEnd(result) {
         if (result == "D") {

@@ -42,7 +42,7 @@ class Room {
 	}
 
 	handleStart(sign: string, turn: string) {
-		this.board.clear()
+		this.board.clear();
 		this.board.setSign(sign);
 		this.board.setAllowPlace(turn == sign);
 		this.topbar.setTurn(turn == sign, turn);
@@ -58,14 +58,17 @@ class Room {
 			this.board.handleOpponentMove(x, y, sign);
 		}
 
-		this.topbar.setTurn(sign != this.board.sign, this.board.sign);
+		this.topbar.setTurn(sign != this.board.sign, sign == "O" ? "X" : "O");
 	}
 
 	handleEnd(result: string) {
 		if (result == "D") {
 			this.topbar.setResult("D", this.board.sign);
 		} else {
-			this.topbar.setResult(result == this.board.sign ? "W" : "L", this.board.sign);
+			this.topbar.setResult(
+				result == this.board.sign ? "W" : "L",
+				this.board.sign
+			);
 		}
 		this.board.setAllowPlace(false);
 	}
